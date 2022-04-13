@@ -6,6 +6,9 @@
 
 FPGA实现LeNet5
 
+## version tag control
+最新cpu版本为v0.1.2
+
 ## TODO 文件目录
 resource
 visdom-master.zip : visdom git 安装包
