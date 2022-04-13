@@ -1,3 +1,23 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@AUTHOR     WZX
+@EMAIL      wuzhong_xing@126.com
+@TIME&LOG   2022/4/12 - download - wzx
+            -----------------
+            basic function
+
+            2022/4/13 - modify - wzx
+            -----------------
+            add file annotation
+
+ TODO       google style annotation
+@FUNC       convert float to fixed
+@USAGE      >>> python float2fixed.py
+            under dir [LeNet5_Pytorch]
+'''
+
+
 import numpy as np
 import math
 

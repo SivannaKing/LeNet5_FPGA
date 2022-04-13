@@ -3,13 +3,14 @@
 '''
 @AUTHOR     WZX
 @EMAIL      wuzhong_xing@126.com
-@TIME&LOG   2022/4/12 - download
+@TIME&LOG   2022/4/12 - download - wzx
             -----------------
             basic function
-
-            2022/4/12 - modify
-            -----------------
             change visdom env
+
+            2022/4/13 - modify - wzx
+            -----------------
+            fix pylint error red lines(BUG002)
 
  TODO       google style annotation
 @FUNC       plot Result data
@@ -17,20 +18,20 @@
             under dir [LeNet5_Pytorch]
 '''
 
-import os
+
 from LeNet5 import LeNet5
 import torch
-import torch.nn as nn
-import torch.optim as optim
-from torchvision import datasets, transforms
+from torch import nn
+from torch import optim
 from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
 from visdom import Visdom
 
 
 # Hyper parameter
-batch_size = 256
-learning_rate = 0.001
-epochs = 10
+BATCH_SIZE = 256
+LEARNING_RATE = 0.001
+EPOCHS = 10
 
 
 # Load Data
@@ -45,17 +46,16 @@ data_test = datasets.MNIST('./data/mnist', train=False, download=True,
                                transforms.Resize((28, 28)),
                                transforms.ToTensor(),  # [0,1]
                            ]))
-
-data_train_loader = DataLoader(data_train, batch_size=batch_size, shuffle=True, num_workers=0)
-data_test_loader = DataLoader(data_test, batch_size=batch_size, num_workers=0)
+data_train_loader = DataLoader(data_train, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
+data_test_loader = DataLoader(data_test, batch_size=BATCH_SIZE, num_workers=0)
 
 
 # Visdom initialization
-viz = Visdom(env=u'LeNet5-MNIST', use_incoming_socket=False)
-
-viz.line([0.], [0.], win='train_loss', opts=dict(title='train_loss'))
-viz.line([[0.0, 0.0]], [0.], win='test', opts=dict(title='test_loss & test_acc.',
-                                                   legend=['loss', 'acc.']))
+viz = Visdom(env='LeNet5-MNIST', use_incoming_socket=False)
+viz.line([0.], [0.],
+         win='train_loss', opts=dict(title='train_loss'))
+viz.line([[0.0, 0.0]], [0.],
+         win='test', opts=dict(title='test_loss & test_acc.', legend=['loss', 'acc.']))
 
 
 # Open GPU/CPU & transport
@@ -63,15 +63,15 @@ viz.line([[0.0, 0.0]], [0.], win='test', opts=dict(title='test_loss & test_acc.'
 device = torch.device('cpu')
 torch.manual_seed(1234)  # for recurrent experiment
 
-model = LeNet5().to(device)
-criterion = nn.CrossEntropyLoss().to(device)
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+# train
+MODEL = LeNet5().to(device)
+CRITERION = nn.CrossEntropyLoss().to(device)
+OPTIMIZER = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
 
 
 def evaluate(model, loader):
-
     model.eval()
-
     loss = 0
     correct = 0
     total = len(loader.dataset)
@@ -82,7 +82,7 @@ def evaluate(model, loader):
             logits = model(x)
             pred = logits.argmax(dim=1)
 
-        loss += criterion(logits, y).item()
+        loss += CRITERION(logits, y).item()  # pylint:disable=E1102
         correct += torch.eq(pred, y).sum().float().item()
 
     acc = correct / total
@@ -91,11 +91,10 @@ def evaluate(model, loader):
 
 
 def main():
-
     best_acc, best_epoch = 0, 0
     global_step = 0
 
-    for epoch in range(epochs):
+    for epoch in range(EPOCHS):
 
         # Train
         for batch_idx, (data, target) in enumerate(data_train_loader):
@@ -103,13 +102,13 @@ def main():
             # data: [b, 1, 28, 28], target: [b]
             data, target = data.to(device), target.to(device)
 
-            model.train()
-            logits = model(data)
-            loss = criterion(logits, target)
+            MODEL.train()
+            logits = MODEL(data)  # pylint:disable=E1102
+            loss = CRITERION(logits, target)  # pylint:disable=E1102
 
-            optimizer.zero_grad()
+            OPTIMIZER.zero_grad()
             loss.backward()
-            optimizer.step()
+            OPTIMIZER.step()
 
             viz.line([loss.item()], [global_step], win='train_loss', update='append')
             global_step += 1
@@ -123,13 +122,13 @@ def main():
         #  Test/Validation
         if epoch % 1 == 0:
 
-            test_acc, test_loss = evaluate(model, data_test_loader)
+            test_acc, test_loss = evaluate(MODEL, data_test_loader)
             if test_acc > best_acc:
                 best_epoch = epoch+1
                 best_acc = test_acc
 
                 # save model
-                torch.save(model.state_dict(), 'best.pt')
+                torch.save(MODEL.state_dict(), 'best.pt')
 
                 viz.line([[test_loss, test_acc]],
                          [global_step], win='test', update='append')
@@ -143,11 +142,11 @@ def main():
     print('best_epoch:', best_epoch, 'best_acc:', best_acc)
 
     # load best model
-    model.load_state_dict(torch.load('best.pt')),
+    MODEL.load_state_dict(torch.load('best.pt'))
     print('Successfully loaded from ckpt!\n')
 
     # Test
-    test_acc, test_loss = evaluate(model, data_test_loader)
+    test_acc, test_loss = evaluate(MODEL, data_test_loader)
     test_loss /= len(data_test_loader.dataset)
     print('test_acc:', test_acc, 'test_loss:', test_loss)
 

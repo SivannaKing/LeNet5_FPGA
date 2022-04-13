@@ -1,3 +1,23 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@AUTHOR     WZX
+@EMAIL      wuzhong_xing@126.com
+@TIME&LOG   2022/4/12 - download - wzx
+            -----------------
+            basic function
+
+            2022/4/13 - modify - wzx
+            -----------------
+            modify annotation
+
+ TODO       google style annotation
+@FUNC       convert mnist .gz to .json
+@USAGE      >>> python convert_mnist_to_json.py
+            under dir [LeNet5_Pytorch]
+'''
+
+
 # The MNIST dataset has labels (which denote the correct value of the
 # handwritten digit) and pixel values separate. The images are a 28 by 28 pixel
 # grid of values that range from 0 (white) to 255 (black) with in-between

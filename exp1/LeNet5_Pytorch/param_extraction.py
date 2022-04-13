@@ -1,3 +1,23 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@AUTHOR     WZX
+@EMAIL      wuzhong_xing@126.com
+@TIME&LOG   2022/4/12 - download - wzx
+            -----------------
+            basic function
+
+            2022/4/13 - modify - wzx
+            -----------------
+            add file annotation
+
+ TODO       google style annotation
+@FUNC       convert float to fixed
+@USAGE      >>> python param_extraction.py
+            under dir [LeNet5_Pytorch]
+'''
+
+
 import torch
 import numpy as np
 import pandas as pd
