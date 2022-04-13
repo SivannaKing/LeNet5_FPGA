@@ -6,6 +6,10 @@
 
 FPGA实现LeNet5
 
+## tag
+v0.1.1 cpu训练版本，可运行。
+
+
 ## TODO 文件目录
 resource
 visdom-master.zip : visdom git 安装包
