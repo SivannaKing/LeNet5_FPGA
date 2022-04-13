@@ -12,7 +12,7 @@
             add file annotation
 
  TODO       google style annotation
-@FUNC       convert float to fixed
+@FUNC       extra parameters of LeNet5
 @USAGE      >>> python param_extraction.py
             under dir [LeNet5_Pytorch]
 '''
