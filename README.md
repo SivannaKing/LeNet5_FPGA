@@ -7,8 +7,9 @@
 FPGA实现LeNet5
 
 ## tag
-v0.1.1 cpu训练版本，可运行。
-
+v0.1.0 cpu训练版本，可运行。
+v0.1.1 修复注释错误。
+v0.1.0 完善README。
 
 ## TODO 文件目录
 resource
